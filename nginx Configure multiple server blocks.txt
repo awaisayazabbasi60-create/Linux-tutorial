@@ -1,0 +1,374 @@
+# Nginx on CentOS – Complete Practical Notes
+
+## Task Title
+
+**Configure Nginx Networking with Multiple Server Blocks and Logs on CentOS (Step-by-Step Practical)**
+
+---
+
+## Objective
+
+* Install and run Nginx on CentOS
+* Configure **multiple server blocks (virtual hosts)**
+* Serve different websites on **different ports**
+* Handle **firewall** and **SELinux** correctly
+* Understand and verify **Nginx access and error logs**
+* Debug common issues (port conflict, permission denied)
+
+---
+
+## Environment
+
+* OS: **CentOS**
+* Web Server: **Nginx**
+* Config Path: `/etc/nginx/conf.d/`
+* Web Root: `/usr/share/nginx/`
+* Logs: `/var/log/nginx/`
+
+---
+
+## Step 1: Install Nginx
+
+```bash
+sudo yum install epel-release -y
+sudo yum install nginx -y
+```
+
+**Explanation:**
+
+* EPEL repository provides extra packages
+* Nginx web server is installed
+
+Verify installation:
+
+```bash
+nginx -v
+```
+
+---
+
+## Step 2: Start and Enable Nginx Service
+
+```bash
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+**Explanation:**
+
+* `start` runs Nginx immediately
+* `enable` ensures Nginx starts automatically on boot
+
+Check status:
+
+```bash
+systemctl status nginx
+```
+
+---
+
+## Step 3: Verify Default Nginx Page
+
+```bash
+curl localhost
+```
+
+**Explanation:**
+
+* Confirms Nginx is running and responding on port 80
+
+---
+
+## Step 4: Create Website Directories
+
+```bash
+sudo mkdir -p /usr/share/nginx/site1
+sudo mkdir -p /usr/share/nginx/site2
+```
+
+**Explanation:**
+
+* Each directory represents a separate website
+* `/usr/share/nginx` is standard web root on CentOS
+
+---
+
+## Step 5: Create Test HTML Pages
+
+### Site 1
+
+```bash
+sudo nano /usr/share/nginx/site1/index.html
+```
+
+```html
+<h1>Welcome to Site 1</h1>
+<p>Nginx Server Block on Port 8080</p>
+```
+
+### Site 2
+
+```bash
+sudo nano /usr/share/nginx/site2/index.html
+```
+
+```html
+<h1>Welcome to Site 2</h1>
+<p>Nginx Server Block on Port 8081</p>
+```
+
+**Explanation:**
+
+* These files are served when users access the site
+
+---
+
+## Step 6: Set Permissions and SELinux Context
+
+```bash
+sudo chown -R nginx:nginx /usr/share/nginx
+sudo chmod -R 755 /usr/share/nginx
+```
+
+**Explanation:**
+
+* Allows Nginx process to read website files
+
+Set SELinux context:
+
+```bash
+sudo chcon -R -t httpd_sys_content_t /usr/share/nginx
+```
+
+**Explanation:**
+
+* SELinux allows Nginx to serve files from this directory
+
+---
+
+## Step 7: Create Server Block Configuration Files
+
+> **Note:** CentOS Nginx reads configs from `/etc/nginx/conf.d/*.conf`
+
+### Server Block 1 (Port 8080)
+
+```bash
+sudo nano /etc/nginx/conf.d/site1.conf
+```
+
+```nginx
+server {
+    listen 8080;
+    server_name localhost;
+
+    root /usr/share/nginx/site1;
+    index index.html;
+
+    access_log /var/log/nginx/site1_access.log;
+    error_log  /var/log/nginx/site1_error.log;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+### Server Block 2 (Port 8081)
+
+```bash
+sudo nano /etc/nginx/conf.d/site2.conf
+```
+
+```nginx
+server {
+    listen 8081;
+    server_name localhost;
+
+    root /usr/share/nginx/site2;
+    index index.html;
+
+    access_log /var/log/nginx/site2_access.log;
+    error_log  /var/log/nginx/site2_error.log;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+**Explanation (Important Directives):**
+
+* `listen` – Port number for the site
+* `server_name` – Hostname or domain
+* `root` – Website directory
+* `index` – Default page
+* `access_log` – Records all requests
+* `error_log` – Records errors
+
+---
+
+## Step 8: Test Nginx Configuration
+
+```bash
+nginx -t
+```
+
+**Explanation:**
+
+* Checks syntax and configuration validity
+* Prevents broken reloads
+
+---
+
+## Step 9: Reload Nginx
+
+```bash
+systemctl reload nginx
+```
+
+**Explanation:**
+
+* Applies new configuration without stopping service
+
+---
+
+## Step 10: Configure Firewall
+
+```bash
+firewall-cmd --permanent --add-port=8080/tcp
+firewall-cmd --permanent --add-port=8081/tcp
+firewall-cmd --reload
+```
+
+**Explanation:**
+
+* Allows external traffic to reach Nginx on custom ports
+
+---
+
+## Step 11: Configure SELinux for Custom Ports (Critical)
+
+Check SELinux mode:
+
+```bash
+getenforce
+```
+
+Install tools:
+
+```bash
+yum install policycoreutils-python-utils -y
+```
+
+Allow ports:
+
+```bash
+semanage port -a -t http_port_t -p tcp 8080
+semanage port -a -t http_port_t -p tcp 8081
+```
+
+Verify:
+
+```bash
+semanage port -l | grep http_port_t
+```
+
+**Explanation:**
+
+* SELinux blocks Nginx from binding non-standard ports by default
+* `semanage` explicitly allows these ports
+
+---
+
+## Step 12: Verify Listening Ports
+
+```bash
+ss -tulnp | grep nginx
+```
+
+Expected:
+
+* Nginx listening on **8080 and 8081**
+
+---
+
+## Step 13: Test Websites
+
+```bash
+curl localhost:8080
+curl localhost:8081
+```
+
+Browser:
+
+```
+http://<SERVER-IP>:8080
+http://<SERVER-IP>:8081
+```
+
+---
+
+## Step 14: Verify Logs
+
+### Access Logs
+
+```bash
+tail -f /var/log/nginx/site1_access.log
+tail -f /var/log/nginx/site2_access.log
+```
+
+### Error Logs
+
+```bash
+tail -f /var/log/nginx/site1_error.log
+tail -f /var/log/nginx/site2_error.log
+```
+
+**Explanation:**
+
+* Access logs show client requests
+* Error logs help debugging issues
+
+---
+
+## Step 15: Debugging and Common Issues
+
+### Issue: `Permission denied` on bind
+
+* Cause: SELinux blocking port
+* Fix: `semanage port -a -t http_port_t -p tcp <port>`
+
+### Issue: Port 9090 conflict
+
+* Cause: Cockpit web console uses port 9090
+* Fix: Use different ports (8080, 8081)
+
+### Useful Debug Commands
+
+```bash
+ss -tulnp
+nginx -t
+tail /var/log/nginx/error.log
+```
+
+---
+
+## Key Learning Points (Interview Ready)
+
+* Nginx uses **server blocks** for multiple sites
+* CentOS requires **firewall + SELinux** configuration
+* Port open does not mean SELinux allowed
+* `ss -tulnp` shows actual listening services
+* Logs are essential for monitoring and debugging
+
+---
+
+## Final Result
+
+* Two websites running on a single Nginx server
+* Separate ports and separate logs
+* Secure and production-ready configuration
+
+---
+
+**End of Practical Notes**

@@ -1,0 +1,326 @@
+thenticating with public key "ubuntuvm"
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.14.0-1011-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Thu Sep 18 04:56:47 UTC 2025
+
+  System load:  0.0               Temperature:           -273.1 C
+  Usage of /:   47.5% of 6.71GB   Processes:             115
+  Memory usage: 34%               Users logged in:       0
+  Swap usage:   0%                IPv4 address for ens5: 172.31.31.137
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+10 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+1 additional security update can be applied with ESM Apps.
+Learn more about enabling ESM Apps service at https://ubuntu.com/esm
+
+
+*** System restart required ***
+Last login: Wed Sep 17 07:43:36 2025 from 154.192.47.47
+ubuntu@ip-172-31-31-137:~$ cd /var/lib/docker
+-bash: cd: /var/lib/docker: Permission denied
+ubuntu@ip-172-31-31-137:~$ sudo -i
+root@ip-172-31-31-137:~#
+root@ip-172-31-31-137:~#
+root@ip-172-31-31-137:~# /var/lib/docker
+-bash: /var/lib/docker: Is a directory
+root@ip-172-31-31-137:~# cd /var/lib/docker
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@ip-172-31-31-137:/var/lib/docker# docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED        STATUS                                                                                                 PORTS     NAMES
+e82408f2a33a   nginx     "/docker-entrypoint.…"   23 hours ago   Exited (0) 23 h                                                                             ours ago             mycon2
+b789e61b8a64   nginx     "/docker-entrypoint.…"   23 hours ago   Exited (0) 23 h                                                                             ours ago             mycon1
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker# ls
+buildkit    engine-id  network   plugins   swarm  volumes
+containers  image      overlay2  runtimes  tmp
+root@ip-172-31-31-137:/var/lib/docker# docker create volume vol1
+Unable to find image 'volume:latest' locally
+Error response from daemon: pull access denied for volume, repository does not e                                                                             xist or may require 'docker login': denied: requested access to the resource is                                                                              denied
+root@ip-172-31-31-137:/var/lib/docker# docker volume create vol1
+vol1
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker# docker  run -it -d -p 80:80 -v
+flag needs an argument: 'v' in -v
+See 'docker run --help'.
+root@ip-172-31-31-137:/var/lib/docker# docker  run -it -d -p 80:80 -v vol1:/apt/                                                                             mydata
+"docker run" requires at least 1 argument.
+See 'docker run --help'.
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Create and run a new container from an image
+root@ip-172-31-31-137:/var/lib/docker# docker  run -it -d -p 80:80 -v vol1:/apt/                                                                             vol1
+"docker run" requires at least 1 argument.
+See 'docker run --help'.
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Create and run a new container from an image
+root@ip-172-31-31-137:/var/lib/docker# docker  run -it -d -p 80:80 -v vol1:/opt/                                                                             vol1
+"docker run" requires at least 1 argument.
+See 'docker run --help'.
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Create and run a new container from an image
+root@ip-172-31-31-137:/var/lib/docker# docker  run -it -d -p 80:80 -v vol1: /opt                                                                             /vol1
+docker: invalid spec: vol1:: empty section between colons.
+See 'docker run --help'.
+root@ip-172-31-31-137:/var/lib/docker# docker  run -it -d -p 80:80 -v vol1:/opt/                                                                             vol1
+"docker run" requires at least 1 argument.
+See 'docker run --help'.
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Create and run a new container from an image
+root@ip-172-31-31-137:/var/lib/docker# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@ip-172-31-31-137:/var/lib/docker# docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED        STATUS                                                                                                 PORTS     NAMES
+e82408f2a33a   nginx     "/docker-entrypoint.…"   23 hours ago   Exited (0) 23 h                                                                             ours ago             mycon2
+b789e61b8a64   nginx     "/docker-entrypoint.…"   23 hours ago   Exited (0) 23 h                                                                             ours ago             mycon1
+root@ip-172-31-31-137:/var/lib/docker# sudo systemctl status docker
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; preset: e>
+     Active: active (running) since Wed 2025-09-17 06:59:38 UTC; 23h ago
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 9912 (dockerd)
+      Tasks: 9
+     Memory: 56.2M (peak: 59.3M)
+        CPU: 9.222s
+     CGroup: /system.slice/docker.service
+             └─9912 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/cont>
+
+Sep 17 06:59:37 ip-172-31-31-137 dockerd[9912]: time="2025-09-17T06:59:37.54490>
+Sep 17 06:59:37 ip-172-31-31-137 dockerd[9912]: time="2025-09-17T06:59:37.58803>
+Sep 17 06:59:37 ip-172-31-31-137 dockerd[9912]: time="2025-09-17T06:59:37.87481>
+Sep 17 06:59:37 ip-172-31-31-137 dockerd[9912]: time="2025-09-17T06:59:37.96681>
+Sep 17 06:59:37 ip-172-31-31-137 dockerd[9912]: time="2025-09-17T06:59:37.99505>
+Sep 17 06:59:37 ip-172-31-31-137 dockerd[9912]: time="2025-09-17T06:59:37.99552>
+Sep 17 06:59:38 ip-172-31-31-137 dockerd[9912]: time="2025-09-17T06:59:38.03060>
+Sep 17 06:59:38 ip-172-31-31-137 systemd[1]: Started docker.service - Docker Ap>
+Sep 18 05:51:38 ip-172-31-31-137 dockerd[9912]: time="2025-09-18T05:51:38.97588>
+Sep 18 05:51:38 ip-172-31-31-137 dockerd[9912]: time="2025-09-18T05:51:38.97593>
+
+root@ip-172-31-31-137:/var/lib/docker# docker  run -it -d -p 80:80 -v vol1:/opt/                                                                             vol1
+"docker run" requires at least 1 argument.
+See 'docker run --help'.
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Create and run a new container from an image
+root@ip-172-31-31-137:/var/lib/docker# ls -l
+total 44
+drwx--x--x  3 root root 4096 Sep 17 05:24 buildkit
+drwx--x---  4 root root 4096 Sep 17 06:52 containers
+-rw-------  1 root root   36 Sep 17 05:24 engine-id
+drwx------  3 root root 4096 Sep 17 05:24 image
+drwxr-x---  3 root root 4096 Sep 17 05:24 network
+drwx--x--- 22 root root 4096 Sep 17 06:59 overlay2
+drwx------  3 root root 4096 Sep 17 05:24 plugins
+drwx------  2 root root 4096 Sep 17 06:59 runtimes
+drwx------  2 root root 4096 Sep 17 05:24 swarm
+drwx------  2 root root 4096 Sep 17 06:59 tmp
+drwx-----x  3 root root 4096 Sep 18 05:53 volumes
+root@ip-172-31-31-137:/var/lib/docker# cd volumes
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes# ls -l
+total 28
+brw------- 1 root root 259, 1 Sep 17 06:59 backingFsBlockDev
+-rw------- 1 root root  32768 Sep 18 05:53 metadata.db
+drwx-----x 3 root root   4096 Sep 18 05:53 vol1
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes# docker volume create prod_data
+prod_data
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes# ls -l
+total 32
+brw------- 1 root root 259, 1 Sep 17 06:59 backingFsBlockDev
+-rw------- 1 root root  32768 Sep 18 06:06 metadata.db
+drwx-----x 3 root root   4096 Sep 18 06:06 prod_data
+drwx-----x 3 root root   4096 Sep 18 05:53 vol1
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes# cd ..
+root@ip-172-31-31-137:/var/lib/docker# cd ..
+root@ip-172-31-31-137:/var/lib# cd ..
+root@ip-172-31-31-137:/var# cd .. /..
+-bash: cd: too many arguments
+root@ip-172-31-31-137:/var# cd ..
+root@ip-172-31-31-137:/#
+root@ip-172-31-31-137:/#
+root@ip-172-31-31-137:/# docker run -it -d -p 80:80 -v prod_data:/my data --name                                                                              mycon1 nginx
+Unable to find image 'data:latest' locally
+docker: Error response from daemon: pull access denied for data, repository does                                                                              not exist or may require 'docker login': denied: requested access to the resour                                                                             ce is denied.
+See 'docker run --help'.
+root@ip-172-31-31-137:/# docker run -it -d -p 80:80 -v prod_data:/my data --name                                                                             mycon1 nginx
+Unable to find image 'data:latest' locally
+docker: Error response from daemon: pull access denied for data, repository does                                                                              not exist or may require 'docker login': denied: requested access to the resour                                                                             ce is denied.
+See 'docker run --help'.
+root@ip-172-31-31-137:/# docker run -it -d -p 80:80 -v prod_data:/mydata --namem                                                                             ycon1 nginx
+unknown flag: --namemycon1
+See 'docker run --help'.
+root@ip-172-31-31-137:/# docker run -it -d -p 80:80 -v prod_data:/mydata --name                                                                              mycon1 nginx
+docker: Error response from daemon: Conflict. The container name "/mycon1" is al                                                                             ready in use by container "b789e61b8a6465263269db5a71b5761cf0b4cbf65fc1b98ede229                                                                             be84bf004e9". You have to remove (or rename) that container to be able to reuse                                                                              that name.
+See 'docker run --help'.
+root@ip-172-31-31-137:/# docker run -it -d -p 80:80 -v prod_data:/mydata --name                                                                              mycon3 nginx
+810f206862b45adf8c82f31ef0341503a043fed5af5c692c23c8287bb1b260d2
+root@ip-172-31-31-137:/#
+root@ip-172-31-31-137:/#
+root@ip-172-31-31-137:/# docker exec -it mycon /bin/bash
+Error response from daemon: No such container: mycon
+root@ip-172-31-31-137:/# docker exec -it mycon3 /bin/bash
+root@810f206862b4:/#
+root@810f206862b4:/#
+root@810f206862b4:/# cd mydata/
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata# touch file1.php
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata# touch file2.json
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata# touch file3.js
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata# ls -l
+total 0
+-rw-r--r-- 1 root root 0 Sep 18 06:16 file1.php
+-rw-r--r-- 1 root root 0 Sep 18 06:16 file2.json
+-rw-r--r-- 1 root root 0 Sep 18 06:16 file3.js
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata#
+root@810f206862b4:/mydata# exit
+exit
+root@ip-172-31-31-137:/#
+root@ip-172-31-31-137:/#
+root@ip-172-31-31-137:/#
+root@ip-172-31-31-137:/# cd /var/lib/docker
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker# ls -l
+total 44
+drwx--x--x  3 root root 4096 Sep 17 05:24 buildkit
+drwx--x---  5 root root 4096 Sep 18 06:14 containers
+-rw-------  1 root root   36 Sep 17 05:24 engine-id
+drwx------  3 root root 4096 Sep 17 05:24 image
+drwxr-x---  3 root root 4096 Sep 17 05:24 network
+drwx--x--- 24 root root 4096 Sep 18 06:14 overlay2
+drwx------  3 root root 4096 Sep 17 05:24 plugins
+drwx------  2 root root 4096 Sep 17 06:59 runtimes
+drwx------  2 root root 4096 Sep 17 05:24 swarm
+drwx------  2 root root 4096 Sep 17 06:59 tmp
+drwx-----x  4 root root 4096 Sep 18 06:06 volumes
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker#
+root@ip-172-31-31-137:/var/lib/docker# cd /var/lib/docker/volumes/
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes# ls -l
+total 32
+brw------- 1 root root 259, 1 Sep 17 06:59 backingFsBlockDev
+-rw------- 1 root root  32768 Sep 18 06:06 metadata.db
+drwx-----x 3 root root   4096 Sep 18 06:06 prod_data
+drwx-----x 3 root root   4096 Sep 18 05:53 vol1
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes#
+root@ip-172-31-31-137:/var/lib/docker/volumes# cd prod_data/
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data# ls -l
+total 4
+drwxr-xr-x 2 root root 4096 Sep 18 06:16 _data
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data# ls -l
+total 4
+drwxr-xr-x 2 root root 4096 Sep 18 06:16 _data
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data# cd_data
+cd_data: command not found
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data# cd _data
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data# ls -l
+total 0
+-rw-r--r-- 1 root root 0 Sep 18 06:16 file1.php
+-rw-r--r-- 1 root root 0 Sep 18 06:16 file2.json
+-rw-r--r-- 1 root root 0 Sep 18 06:16 file3.js
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data# nano file2.json
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data#
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data# cd
+root@ip-172-31-31-137:~#
+root@ip-172-31-31-137:~#
+root@ip-172-31-31-137:~# docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                               NAMES
+810f206862b4   nginx     "/docker-entrypoint.…"   12 minutes ago   Up 12 minutes   0.0.0.0:80->80/tcp, :::80->80/tcp   mycon3
+root@ip-172-31-31-137:~# docker exec -it mycon3 /bin/bash
+root@810f206862b4:/# ls -l
+total 68
+lrwxrwxrwx   1 root root    7 Sep  8 00:00 bin -> usr/bin
+drwxr-xr-x   2 root root 4096 Aug 24 16:05 boot
+drwxr-xr-x   5 root root  360 Sep 18 06:14 dev
+drwxr-xr-x   1 root root 4096 Sep  8 21:14 docker-entrypoint.d
+-rwxr-xr-x   1 root root 1620 Sep  8 21:13 docker-entrypoint.sh
+drwxr-xr-x   1 root root 4096 Sep 18 06:14 etc
+drwxr-xr-x   2 root root 4096 Aug 24 16:05 home
+lrwxrwxrwx   1 root root    7 Sep  8 00:00 lib -> usr/lib
+lrwxrwxrwx   1 root root    9 Sep  8 00:00 lib64 -> usr/lib64
+drwxr-xr-x   2 root root 4096 Sep  8 00:00 media
+drwxr-xr-x   2 root root 4096 Sep  8 00:00 mnt
+drwxr-xr-x   2 root root 4096 Sep 18 06:25 mydata
+drwxr-xr-x   2 root root 4096 Sep  8 00:00 opt
+dr-xr-xr-x 184 root root    0 Sep 18 06:14 proc
+drwx------   1 root root 4096 Sep 18 06:17 root
+drwxr-xr-x   1 root root 4096 Sep 18 06:14 run
+lrwxrwxrwx   1 root root    8 Sep  8 00:00 sbin -> usr/sbin
+drwxr-xr-x   2 root root 4096 Sep  8 00:00 srv
+dr-xr-xr-x  13 root root    0 Sep 18 06:14 sys
+drwxrwxrwt   2 root root 4096 Sep  8 00:00 tmp
+drwxr-xr-x   1 root root 4096 Sep  8 00:00 usr
+drwxr-xr-x   1 root root 4096 Sep  8 00:00 var
+root@810f206862b4:/# cd /var/lib/docker/volumes/prod_data/_data/
+bash: cd: /var/lib/docker/volumes/prod_data/_data/: No such file or directory
+root@810f206862b4:/# exit
+exit
+root@ip-172-31-31-137:~# cd /var/lib/docker/volumes/prod_data/_data/
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data# cat file2.json
+new change detected
+
+root@ip-172-31-31-137:/var/lib/docker/volumes/prod_data/_data#

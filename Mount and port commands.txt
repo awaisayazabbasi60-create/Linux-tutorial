@@ -1,0 +1,24 @@
+Commands
+
+sudo nano /etc/nginx/sites-available/default
+
+sudo nginx -t
+
+sudo systemctl restart nginx
+
+allow port
+
+Mount commands
+
+mkdir /mnt/diskname/
+
+lsblk
+
+mount /dev/volume name  /mnt/diskname/
+
+mkfs.ext4 /dev/volume name
+
+df -h
+
+umount /dev/volume name
+  

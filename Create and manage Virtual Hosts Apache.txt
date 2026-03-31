@@ -1,0 +1,272 @@
+👍 **Perfect — ab hum bilkul ZERO se start karte hain**, jaise **fresh server** ho,
+aur **sirf file-creation se le kar final test tak** har cheez **order + reason ke sath** samjhaunga.
+
+Main assume kar raha hoon:
+
+* OS: **CentOS / RHEL**
+* Apache: **httpd**
+* IP: **192.168.56.101**
+* Method: **IP + Port based VirtualHosts**
+* No DNS / No Windows hosts
+
+---
+
+# 🧱 STEP-0: Apache install & enable (baseline)
+
+```bash
+yum install -y httpd
+systemctl enable httpd
+```
+
+📌 Apache files location:
+
+* Main config → `/etc/httpd/conf/httpd.conf`
+* Extra configs → `/etc/httpd/conf.d/`
+* Web root → `/var/www/`
+
+---
+
+# 🗂️ STEP-1: Website directories CREATE karna (FIRST FILE SYSTEM WORK)
+
+```bash
+mkdir -p /var/www/site1
+mkdir -p /var/www/site2
+```
+
+### Test content create karo:
+
+```bash
+echo "THIS IS SITE 1" > /var/www/site1/index.html
+echo "THIS IS SITE 2" > /var/www/site2/index.html
+```
+
+🧠 Kyon?
+
+> Apache bina index.html ke kuch bhi serve nahi karega.
+
+---
+
+# 🧑‍🔧 STEP-2: Ownership & permissions (FILE ACCESS)
+
+```bash
+chown -R apache:apache /var/www/site1 /var/www/site2
+chmod -R 755 /var/www/site1 /var/www/site2
+```
+
+🧠 Kyon?
+
+* Apache user = `apache`
+* Read access na ho → **403 Forbidden**
+
+---
+
+# 🔐 STEP-3: SELinux context (VERY IMPORTANT)
+
+```bash
+chcon -R -t httpd_sys_content_t /var/www/site1
+chcon -R -t httpd_sys_content_t /var/www/site2
+```
+
+Check:
+
+```bash
+getenforce
+```
+
+🧠 Agar `Enforcing` hai → ye step mandatory hai.
+
+---
+
+# ⚙️ STEP-4: Apache ports LISTEN karao
+
+### Main config open karo:
+
+```bash
+nano /etc/httpd/conf/httpd.conf
+```
+
+Search:
+
+```text
+Listen 80
+```
+
+Add below:
+
+```text
+Listen 8080
+```
+
+Final:
+
+```text
+Listen 80
+Listen 8080
+```
+
+🧠 Kyon?
+
+> Apache sirf unhi ports par kaam karta hai jo “Listen” mein defined hon.
+
+---
+
+# 📄 STEP-5: VirtualHost FILES create karna (MAIN TASK)
+
+## 🔹 SITE-1 config file
+
+```bash
+nano /etc/httpd/conf.d/site1.conf
+```
+
+Paste:
+
+```apache
+<VirtualHost 192.168.56.101:80>
+    ServerName 192.168.56.101
+    DocumentRoot /var/www/site1
+
+    <Directory /var/www/site1>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog logs/site1_error.log
+    CustomLog logs/site1_access.log combined
+</VirtualHost>
+```
+
+🧠 Matlab:
+
+> IP:80 pe request aaye → SITE-1 serve karo
+
+---
+
+## 🔹 SITE-2 config file
+
+```bash
+nano /etc/httpd/conf.d/site2.conf
+```
+
+Paste:
+
+```apache
+<VirtualHost 192.168.56.101:8080>
+    ServerName 192.168.56.101
+    DocumentRoot /var/www/site2
+
+    <Directory /var/www/site2>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog logs/site2_error.log
+    CustomLog logs/site2_access.log combined
+</VirtualHost>
+```
+
+🧠 Matlab:
+
+> IP:8080 pe request aaye → SITE-2 serve karo
+
+---
+
+# 🔥 STEP-6: Firewall ports open karna
+
+```bash
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --permanent --add-port=8080/tcp
+firewall-cmd --reload
+```
+
+Check:
+
+```bash
+firewall-cmd --list-ports
+```
+
+---
+
+# 🧪 STEP-7: Apache configuration test
+
+```bash
+apachectl configtest
+```
+
+Expected:
+
+```
+Syntax OK
+```
+
+🧠 Agar yahan error → Apache start hi nahi hoga.
+
+---
+
+# ▶️ STEP-8: Apache start / restart
+
+```bash
+systemctl restart httpd
+systemctl status httpd --no-pager
+```
+
+Expected:
+
+```
+Active: active (running)
+```
+
+---
+
+# 🔍 STEP-9: Confirm listening ports
+
+```bash
+ss -tulpn | grep httpd
+```
+
+Expected:
+
+```
+:80
+:8080
+```
+
+---
+
+# 🌐 STEP-10: FINAL TESTING
+
+### From server:
+
+```bash
+curl http://127.0.0.1
+curl http://127.0.0.1:8080
+```
+
+### From browser:
+
+```
+http://192.168.56.101
+http://192.168.56.101:8080
+```
+
+🎉 RESULT:
+
+* SITE-1 → Port 80
+* SITE-2 → Port 8080
+
+---
+
+# 🧠 1-LINE INTERVIEW SUMMARY
+
+> Port-based Virtual Hosting allows multiple websites
+> on same IP using different ports without DNS.
+
+---
+
+Agar chaho next:
+
+* **nginx reverse proxy with Apache**
+* **Name-based VirtualHosts**
+* **SELinux troubleshooting real errors**
+* **One-page exam notes**
+
+Bas likho 👉 **next** 🔥

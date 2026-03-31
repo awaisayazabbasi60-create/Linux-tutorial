@@ -1,0 +1,24 @@
+🔴 Reason 2: VirtualBox NAT + Port Forwarding missing
+
+Agar tum:
+
+ssh awaisabbasi@localhost -p 2222
+
+
+se login karte ho
+to matlab:
+
+VirtualBox NAT mode mein hai
+
+Port forwarding set hai
+
+📌 Is case mein IP 10.0.2.15 use nahi hoti
+
+✅ Fix 2: localhost use karo (MOST LIKELY)
+
+PowerShell se:
+
+scp -P 2222 winfile.txt awaisabbasi@localhost:/home/awais/
+
+
+🔥 Ye command 100% work karni chahiye agar SSH login ho raha
